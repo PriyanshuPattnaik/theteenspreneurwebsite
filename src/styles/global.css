@@ -1,0 +1,485 @@
+/* Import fonts from Google Fonts - Space Grotesk for headers, Inter for body */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* CSS Variables for TheTeenspreneur Brand - Cyberpunk Matrix Theme */
+:root {
+  /* Background Colors - Dark Cyberpunk Palette */
+  --bg-primary: #0A0B14;           /* Deep dark blue-black (main background) */
+  --bg-secondary: #1A1B2E;         /* Dark blue-gray (secondary backgrounds) */
+  --bg-card: #2D2E3F;              /* Card backgrounds */
+  --bg-terminal: #0A0B14;          /* Terminal/code backgrounds */
+  
+  /* Text Colors - High Contrast Matrix Style */
+  --text-primary: #FFFFFF;         /* Pure white (primary text) */
+  --text-secondary: #8892B0;       /* Muted blue-gray (secondary text) */
+  --text-muted: #64748B;           /* Darker muted text */
+  --text-terminal: #00CC66;        /* Matrix green for terminal text */
+  
+  /* Brand Colors - Matrix/Cyberpunk Inspired */ 
+  --brand-matrix: #00CC66;         /* Matrix green (primary brand) */
+  --brand-lime: #00CC66;           /* Keeping compatibility - now matrix green */
+  --accent-cyan: #00D4FF;          /* Cyberpunk cyan */
+  --accent-magenta: #FF0080;       /* Glitch magenta */
+  --accent-purple: #8B5CF6;        /* Neon purple */
+  
+  /* UI Colors - Cyberpunk Theme */
+  --border-color: rgba(0, 204, 102, 0.3);  /* Matrix green borders */
+  --border-glow: rgba(0, 204, 102, 0.6);   /* Glowing borders */
+  --hover-bg: rgba(26, 27, 46, 0.8);       /* Hover states */
+  --success: #00CC66;              /* Success states (matrix green) */
+  --error: #FF5F56;                /* Error states (cyberpunk red) */
+  --warning: #FFBD2E;              /* Warning states (cyberpunk yellow) */
+  
+  /* Special Effects */
+  --glow-matrix: 0 0 20px rgba(0, 204, 102, 0.3);
+  --glow-matrix-strong: 0 0 30px rgba(0, 204, 102, 0.6);
+  --shadow-cyber: 0 20px 60px rgba(0, 204, 102, 0.2);
+}
+
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* THETEENSPRENEUR TYPOGRAPHY SYSTEM - HYBRID APPROACH */
+
+/* HERO & MAJOR HEADERS - Space Grotesk */
+.h1, .title-hero, h1 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 4.5rem; /* 72px */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* SECTION HEADERS - Space Grotesk */
+.h2, .title-section, h2 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 3.5rem; /* 56px */
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* SUBSECTION HEADERS - Space Grotesk */
+.h3, .title-subsection, h3 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 2rem; /* 32px */
+  line-height: 1.3;
+  letter-spacing: normal;
+}
+
+/* H4 HEADERS - Space Grotesk */
+.h4, h4 {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.3;
+  letter-spacing: normal;
+}
+
+/* BODY TEXT - Inter */
+.text-primary, .body-primary, .body-text, p {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.6;
+  letter-spacing: 0em;
+}
+
+.text-secondary, .body-secondary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.65;
+  letter-spacing: 0em;
+}
+
+/* EMPHASIS TEXT - Inter */
+.emphasis, strong {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+}
+
+/* SUBTEXT & CAPTIONS - Inter */
+.subtext, .tagline {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+.caption, .small-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* BUTTONS & INTERACTIVE ELEMENTS - Inter */
+.btn-text-primary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 1rem; /* 16px */
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.btn-text-secondary {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.nav-link-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.2;
+  letter-spacing: 0em;
+  text-transform: lowercase;
+}
+
+/* SPECIAL TYPOGRAPHY */
+.brand-text {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: lowercase;
+}
+
+.quote-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  font-size: 1.375rem; /* 22px */
+  line-height: 1.5;
+  letter-spacing: 0em;
+  font-style: italic;
+}
+
+.code-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* RESPONSIVE TYPOGRAPHY - Mobile First Approach */
+
+/* Tablet */
+@media (min-width: 768px) {
+  .h1, .title-hero, h1 {
+    font-size: 3.5rem; /* 56px */
+  }
+  
+  .h2, .title-section, h2 {
+    font-size: 2.5rem; /* 40px */
+  }
+  
+  .h3, .title-subsection, h3 {
+    font-size: 1.75rem; /* 28px */
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .h1, .title-hero, h1 {
+    font-size: 4.5rem; /* 72px */
+  }
+  
+  .h2, .title-section, h2 {
+    font-size: 3.5rem; /* 56px */
+  }
+  
+  .h3, .title-subsection, h3 {
+    font-size: 2rem; /* 32px */
+  }
+}
+
+/* Mobile (default) */
+@media (max-width: 767px) {
+  .h1, .title-hero, h1 {
+    font-size: 2.5rem; /* 40px */
+  }
+  
+  .h2, .title-section, h2 {
+    font-size: 1.75rem; /* 28px */
+  }
+  
+  .h3, .title-subsection, h3 {
+    font-size: 1.5rem; /* 24px */
+  }
+  
+  .h4, h4 {
+    font-size: 1.25rem; /* 20px */
+  }
+  
+  .text-primary, .body-primary, .body-text, p {
+    font-size: 1rem; /* 16px */
+  }
+  
+  .text-secondary, .body-secondary {
+    font-size: 0.875rem; /* 14px */
+  }
+  
+  .subtext, .tagline {
+    font-size: 1.125rem; /* 18px */
+  }
+  
+  .caption, .small-text {
+    font-size: 0.75rem; /* 12px */
+  }
+  
+  .quote-text {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+/* ADDITIONAL TYPOGRAPHY CLASSES */
+
+/* Hero Text Variants */
+.hero-text {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* Section Title Variants */
+.section-title {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Body Text Variants */
+.body-large {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.body-regular {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+/* Legacy Typography Scale (keeping for compatibility) */
+.text-xs { font-size: 0.75rem; }      /* 12px */
+.text-sm { font-size: 0.875rem; }     /* 14px */
+.text-base { font-size: 1rem; }       /* 16px */
+.text-lg { font-size: 1.125rem; }     /* 18px */
+.text-xl { font-size: 1.25rem; }      /* 20px */
+.text-2xl { font-size: 1.5rem; }      /* 24px */
+.text-3xl { font-size: 1.875rem; }    /* 30px */
+.text-4xl { font-size: 2.25rem; }     /* 36px */
+.text-5xl { font-size: 3rem; }        /* 48px */
+
+/* Common Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-matrix), #00AA55);
+  color: var(--bg-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  border: 1px solid var(--brand-matrix);
+  box-shadow: var(--glow-matrix);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #00FF73, var(--brand-matrix));
+  transform: translateY(-3px);
+  box-shadow: var(--glow-matrix-strong);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.btn-secondary:hover {
+  background: var(--hover-bg);
+  border-color: var(--brand-matrix);
+  color: var(--brand-matrix);
+  box-shadow: var(--glow-matrix);
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Account for fixed navbar */
+}
+
+/* Typography utilities */
+.font-black { font-weight: 900; }
+.font-extrabold { font-weight: 800; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+.font-regular { font-weight: 400; }
+
+/* Animation utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(0, 204, 102, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(0, 204, 102, 0.8);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Gradient text - Cyberpunk style */
+.gradient-text {
+  background: linear-gradient(135deg, var(--brand-matrix), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-glitch {
+  background: linear-gradient(135deg, var(--brand-matrix), var(--accent-magenta), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects - Matrix style */
+.glow-matrix {
+  box-shadow: var(--glow-matrix);
+}
+
+.glow-matrix:hover {
+  box-shadow: var(--glow-matrix-strong);
+}
+
+.glow-cyber {
+  box-shadow: var(--shadow-cyber);
+}
+
+/* Terminal/Code styling */
+.terminal-text {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  color: var(--text-terminal);
+  background: var(--bg-terminal);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+/* Cyberpunk border effects */
+.cyber-border {
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.cyber-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(0, 204, 102, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cyber-border:hover::before {
+  opacity: 1;
+}
+
+.cyber-border:hover {
+  border-color: var(--border-glow);
+  box-shadow: var(--glow-matrix);
+}
