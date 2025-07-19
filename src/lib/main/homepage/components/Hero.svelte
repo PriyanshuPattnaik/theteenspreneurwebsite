@@ -87,6 +87,10 @@
       }
     }, 60);
   }
+
+  function handleRequestAccess() {
+    window.location.href = 'https://tally.so/r/wz2kNZ';
+  }
 </script>
 
 <section class="hero" class:mounted>
@@ -240,7 +244,7 @@
               <span class="security-level">LEVEL_∞</span>
             </div>
             
-            <button class="matrix-button">
+            <button class="matrix-button" on:click={handleRequestAccess}>
               <div class="button-bg"></div>
               <div class="button-content">
                 <span class="button-text">REQUEST_ACCESS</span>
@@ -409,7 +413,7 @@
   }
   
   .neon-square {
-    position: absolute;
+    position过渡: all 0.3s ease;
     width: clamp(30px, 4vw, 50px);
     height: clamp(30px, 4vw, 50px);
     border: 2px solid #00ff41;
@@ -922,9 +926,9 @@
     background: rgba(5, 5, 8, 0.95);
     border: 1px solid #00ff41;
     border-radius: 8px;
-    padding: clamp(1rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 4vw, 3rem);
     margin-bottom: clamp(1.5rem, 4vw, 3rem);
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
     backdrop-filter: blur(12px);
   }
   
@@ -932,9 +936,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    font-size: clamp(0.8rem, 2vw, 1rem);
   }
   
   .access-label {
@@ -953,29 +957,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.2rem, 3vw, 1.8rem) clamp(2rem, 4vw, 3rem);
     width: 100%;
-    max-width: clamp(250px, 80vw, 400px);
+    max-width: clamp(300px, 85vw, 500px);
     background: none;
-    border: 2px solid #00ff41;
-    border-radius: 8px;
+    border: 3px solid #00ff41;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
   }
   
   .matrix-button:hover .button-bg,
   .matrix-button:active .button-bg {
     transform: translateX(0);
-    opacity: 0.3;
+    opacity: 0.4;
   }
   
   .matrix-button:hover .button-text,
   .matrix-button:active .button-text {
     color: #ffffff;
-    text-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
+    text-shadow: 0 0 20px rgba(0, 255, 65, 1);
+    transform: scale(1.05);
+  }
+  
+  .matrix-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 255, 65, 0.5);
   }
   
   .button-bg {
@@ -984,7 +995,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0, 255, 65, 0.2), rgba(0, 255, 65, 0.5));
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.3), rgba(0, 255, 65, 0.6));
     transform: translateX(-100%);
     transition: transform 0.4s ease, opacity 0.4s ease;
     opacity: 0;
@@ -994,36 +1005,39 @@
     position: relative;
     z-index: 1;
     text-align: center;
+    transition: transform 0.3s ease;
   }
   
   .button-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(0.9rem, 2.2vw, 1.2rem);
-    font-weight: 700;
+    font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+    font-weight: 800;
     color: #00ff41;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
   }
   
   .button-subtext {
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
-    color: #64748b;
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
+    color: #94a3b8;
     font-style: italic;
+    margin-top: 0.3rem;
   }
   
   .button-scan {
     position: absolute;
     top: 0;
     left: -100%;
-    width: 20px;
+    width: 30px;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.4), transparent);
-    animation: buttonScan 3s linear infinite;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.5), transparent);
+    animation: buttonScan 2.5s linear infinite;
   }
   
   @keyframes buttonScan {
     0% { transform: translateX(0); }
-    100% { transform: translateX(500%); }
+    100% { transform: translateX(600%); }
   }
   
   .intelligence-brief {
@@ -1218,7 +1232,7 @@
     }
   
     .matrix-button {
-      padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1rem, 2.5vw, 1.5rem);
+      padding: clamp(0.8rem, 2vw, 1.2rem) clamp(1.2rem, 3vw, 1.8rem);
     }
   }
   

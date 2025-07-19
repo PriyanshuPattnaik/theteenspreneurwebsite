@@ -281,7 +281,8 @@
     }
 
     .logo {
-      height: 100px;
+      height: 200px;
+      width: 200px;
     }
   }
 
@@ -298,7 +299,24 @@
     }
 
     .logo {
-      height: 42px;
+      height: 150px;
+      width: 150px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .nav-container {
+      height: 50px;
+    }
+
+    .mobile-nav {
+      top: 50px;
+      height: calc(100vh - 50px);
+    }
+
+    .logo {
+      height: 120px;
+      width: 120px;
     }
   }
 </style>

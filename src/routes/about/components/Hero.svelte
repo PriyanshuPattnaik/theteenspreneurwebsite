@@ -24,16 +24,16 @@
       role: "Founder & CEO",
       subtitle: "The Wannabe Tony Stark",
       description: "building the impossible since he learned to code. believes teenagers don't need permission to change the world. drinks coffee like it's code fuel and codes like the matrix is real.",
-      image: "/priyanshu-cyber.jpg",
+      image: "src/assets/team/priyanshu.png",
       accent: "primary",
       status: "SYSTEM_ARCHITECT"
     },
     {
       name: "Khyati Kapur",
-      role: "Co-Founder",
+      role: "Business Development & Strategy",
       subtitle: "The Neural Network",
       description: "turns chaos into systems. makes sure our rebellion actually builds something that matters. sees patterns where others see noise. the brain behind our digital revolution.",
-      image: "/khyati-cyber.jpg",
+      image: "src/assets/team/khyati.png",
       accent: "secondary",
       status: "VISION_CORE"
     },
@@ -42,7 +42,7 @@
       role: "Partner & Business Operations",
       subtitle: "The Reality Compiler",
       description: "takes wild ideas and makes them work in the real world. bridges dreams and delivery. speaks fluent startup and translates visions into victories.",
-      image: "/shubham-cyber.jpg",
+      image: "src/assets/team/shubham.png",
       accent: "tertiary",
       status: "EXECUTION_ENGINE"
     },
@@ -340,6 +340,7 @@
     overflow-x: hidden;
     position: relative;
     line-height: 1.6;
+    min-height: 100vh;
   }
 
   .bg-matrix {
@@ -386,8 +387,8 @@
 
   .cursor-glow {
     position: fixed;
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(0, 255, 68, 0.08) 0%, transparent 70%);
     pointer-events: none;
@@ -396,6 +397,7 @@
     top: var(--mouse-y);
     z-index: 2;
     transition: opacity 0.3s ease;
+    opacity: 0.8;
   }
 
   .scanlines {
@@ -408,11 +410,17 @@
     z-index: 2;
     opacity: 0.6;
     box-shadow: 0 0 10px var(--terminal-green);
+    animation: scanlines-move 5s linear infinite;
   }
 
   @keyframes matrix-scroll {
     0% { transform: translateY(0); }
     100% { transform: translateY(30px); }
+  }
+
+  @keyframes scanlines-move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
   }
 
   .terminal-header {
@@ -454,7 +462,7 @@
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
     position: relative;
     z-index: 3;
   }
@@ -463,16 +471,19 @@
     min-height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
     padding-top: 40px;
+    text-align: center;
   }
 
   .hero-content {
     width: 100%;
+    max-width: 600px;
   }
 
   .system-status {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     font-size: 0.875rem;
   }
 
@@ -481,6 +492,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    justify-content: center;
   }
 
   .prompt {
@@ -497,10 +509,10 @@
   }
 
   .hero-title {
-    font-size: clamp(2rem, 8vw, 5rem);
+    font-size: clamp(1.5rem, 10vw, 5rem);
     font-weight: 900;
-    line-height: 1.1;
-    margin-bottom: 3rem;
+    line-height: 1.2;
+    margin-bottom: 2rem;
   }
 
   .hero-title span {
@@ -529,10 +541,11 @@
 
   .hologram-display {
     border: 1px solid var(--terminal-green);
-    padding: 2rem;
+    padding: 1.5rem;
     background: rgba(0, 255, 68, 0.03);
     position: relative;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
   }
 
   .hologram-text {
@@ -565,24 +578,26 @@
   }
 
   .letter-section {
-    padding: 8rem 0;
+    padding: 4rem 0;
     background: linear-gradient(135deg, var(--deep-navy), var(--midnight-black));
   }
 
   .letter-content {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
     background: var(--dark-charcoal);
     border: 1px solid var(--terminal-green);
-    padding: 3rem;
+    padding: 1.5rem;
+    border-radius: 8px;
   }
 
   .letter-header {
     border-bottom: 1px solid var(--slate-gray);
     padding-bottom: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     font-size: 0.75rem;
     color: var(--slate-gray);
+    text-align: center;
   }
 
   .timestamp, .sender, .recipient {
@@ -591,34 +606,35 @@
 
   .letter-body {
     font-size: 1rem;
-    line-height: 1.8;
+    line-height: 1.6;
+    text-align: left;
   }
 
   .opening {
     color: var(--terminal-green);
     font-weight: 600;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .letter-body p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .highlight {
     background: linear-gradient(120deg, transparent 0%, rgba(0, 255, 68, 0.2) 50%, transparent 100%);
     padding: 0.5rem;
     border-left: 3px solid var(--terminal-green);
-    margin: 2rem 0;
+    margin: 1.5rem 0;
     font-weight: 600;
   }
 
   .closing {
-    margin-top: 3rem;
+    margin-top: 2rem;
     font-style: italic;
   }
 
   .signature {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     text-align: right;
   }
 
@@ -628,13 +644,13 @@
   }
 
   .team-section {
-    padding: 8rem 0;
+    padding: 4rem 0;
   }
 
   .section-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-align: center;
   }
 
@@ -644,16 +660,17 @@
 
   .team-intro {
     text-align: center;
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--slate-gray);
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     font-style: italic;
   }
 
   .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 0.5rem;
   }
 
   .team-card {
@@ -673,7 +690,7 @@
   .card-terminal {
     background: var(--dark-charcoal);
     border: 1px solid var(--terminal-green);
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
     transition: all 0.3s ease;
     height: 100%;
@@ -715,12 +732,12 @@
   }
 
   .card-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .member-image {
     height: 200px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     position: relative;
   }
 
@@ -779,7 +796,7 @@
 
   .data-field {
     display: flex;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     gap: 0.5rem;
   }
 
@@ -801,14 +818,14 @@
 
   .bio-text {
     color: var(--slate-gray);
-    line-height: 1.6;
+    line-height: 1.4;
     margin-top: 0.5rem;
     font-style: italic;
   }
 
   .card-footer {
     background: var(--midnight-black);
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 1rem;
     border-top: 1px solid var(--terminal-green);
     display: flex;
     justify-content: space-between;
@@ -817,14 +834,14 @@
   }
 
   .manifesto-section {
-    padding: 8rem 0;
+    padding: 4rem 0;
     background: linear-gradient(135deg, var(--midnight-black), var(--deep-navy));
   }
 
   .manifesto-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 900;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     text-align: center;
     color: var(--terminal-green);
   }
@@ -832,15 +849,16 @@
   .manifesto-terminal {
     background: var(--dark-charcoal);
     border: 1px solid var(--terminal-green);
-    padding: 2rem;
-    max-width: 900px;
+    padding: 1.5rem;
+    max-width: 600px;
     margin: 0 auto;
+    border-radius: 8px;
   }
 
   .manifesto-item {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     align-items: flex-start;
   }
 
@@ -852,11 +870,11 @@
 
   .manifesto-text {
     color: var(--pure-white);
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .cta-section {
-    padding: 6rem 0;
+    padding: 4rem 0;
     background: var(--deep-navy);
     text-align: center;
   }
@@ -864,14 +882,14 @@
   .cta-terminal {
     background: var(--dark-charcoal);
     border: 1px solid var(--terminal-green);
-    padding: 2rem;
-    max-width: 600px;
+    padding: 1.5rem;
+    max-width: 400px;
     margin: 0 auto;
-    border-radius: 4px;
+    border-radius: 8px;
   }
 
   .cta-prompt {
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -888,7 +906,7 @@
   }
 
   .cta-message p {
-    font-size: 1.125rem;
+    font-size: 0.9rem;
     color: var(--slate-gray);
     margin-bottom: 1rem;
   }
@@ -897,13 +915,14 @@
     background: none;
     border: 2px solid var(--terminal-green);
     color: var(--terminal-green);
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+    border-radius: 4px;
   }
 
   .cta-button:hover {
@@ -925,53 +944,46 @@
   }
 
   .cta-button:hover .button-glow {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
   }
 
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    .container { padding: 0 1.5rem; }
-    .hero-title { font-size: clamp(1.5rem, 6vw, 4rem); }
-    .hologram-display { padding: 1.5rem; }
-    .letter-content { padding: 2rem; }
-    .team-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-    .member-image { height: 150px; }
-    .manifesto-terminal { padding: 1.5rem; }
-    .cta-terminal { padding: 1.5rem; }
+  /* Mobile-First Responsive Design */
+  @media (min-width: 481px) {
+    .container { padding: 0 2rem; }
+    .hero-content { max-width: 800px; }
+    .hero-title { font-size: clamp(2rem, 8vw, 5rem); }
+    .hologram-display { padding: 2rem; }
+    .letter-content { padding: 2rem; max-width: 800px; }
+    .team-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .member-image { height: 250px; }
+    .manifesto-terminal { max-width: 900px; padding: 2rem; }
+    .manifesto-text { font-size: 1rem; }
+    .cta-terminal { max-width: 600px; padding: 2rem; }
+    .cta-message p { font-size: 1.125rem; }
+    .cta-button { padding: 0.75rem 2rem; font-size: 1rem; }
   }
 
-  @media (max-width: 768px) {
-    .hero { min-height: 80vh; padding-top: 40px; }
-    .hero-content { padding: 0 1rem; }
-    .system-status { font-size: 0.75rem; }
-    .hero-title { font-size: clamp(1.2rem, 5vw, 3rem); margin-bottom: 2rem; }
-    .hologram-text { font-size: 1rem; }
-    .letter-section, .team-section, .manifesto-section, .cta-section { padding: 4rem 0; }
-    .letter-content { padding: 1.5rem; }
-    .section-title { font-size: 2rem; }
-    .team-intro { font-size: 1rem; }
-    .manifesto-title { font-size: 2rem; }
-    .manifesto-item { flex-direction: column; gap: 0.5rem; }
-    .cta-prompt { font-size: 1rem; }
-    .cta-message p { font-size: 1rem; }
-    .cta-button { padding: 0.5rem 1.5rem; }
+  @media (min-width: 769px) {
+    .hero { min-height: 100vh; }
+    .hero-content { padding: 0; }
+    .system-status { font-size: 1rem; }
+    .letter-section, .team-section, .manifesto-section, .cta-section { padding: 6rem 0; }
+    .section-title { font-size: 3rem; }
+    .team-intro { font-size: 1.125rem; }
+    .manifesto-title { font-size: 2.5rem; }
+    .manifesto-item { flex-direction: row; }
+    .cursor-glow { width: 300px; height: 300px; opacity: 1; }
   }
 
-  @media (max-width: 480px) {
-    .terminal-header { font-size: 0.6rem; height: 30px; }
-    .control { width: 8px; height: 8px; }
-    .hero { min-height: 60vh; }
-    .hero-title { font-size: clamp(1rem, 4vw, 2.5rem); }
-    .letter-header { font-size: 0.6rem; }
-    .letter-body { font-size: 0.9rem; }
-    .team-grid { grid-template-columns: 1fr; }
-    .member-image { height: 120px; }
-    .card-content { padding: 1rem; }
-    .data-field { flex-direction: column; gap: 0.25rem; }
-    .field-label { min-width: auto; }
-    .manifesto-title { font-size: 1.5rem; }
-    .manifesto-text { font-size: 0.9rem; }
-    .cta-terminal { padding: 1rem; }
+  @media (min-width: 1025px) {
+    .container { padding: 0 2rem; }
+    .hero-title { font-size: clamp(2.5rem, 8vw, 5rem); }
+    .hologram-display { padding: 2rem; }
+    .letter-content { padding: 3rem; }
+    .team-grid { gap: 2rem; }
+    .member-image { height: 200px; }
+    .manifesto-terminal { padding: 2rem; }
+    .cta-terminal { padding: 2rem; }
   }
 </style>

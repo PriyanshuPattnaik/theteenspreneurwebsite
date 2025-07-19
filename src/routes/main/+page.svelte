@@ -22,5 +22,4 @@
 <Community />
 <EarlyAccess />
 <Features />
-<Stats />
 <Newsletter />
