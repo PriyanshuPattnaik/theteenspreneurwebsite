@@ -35,5 +35,3 @@
     padding: 0 1rem;
   }
 </style>
-
-<git init />

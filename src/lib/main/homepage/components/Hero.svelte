@@ -19,7 +19,7 @@
   
   let currentHook = hooks[0];
   
-  const finalMessage = "where 13-21 becomes inevitable.";
+  const finalMessage = "where the 13-21 become inevitable.";
   
   const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()";
   
