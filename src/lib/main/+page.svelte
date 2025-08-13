@@ -11,6 +11,4 @@
 </svelte:head>
 
 <Hero />
-<Features />
-<Stats />
 <Newsletter />

@@ -15,7 +15,7 @@
   // Navigation items
   const navItems = [
     { href: '/about', label: 'About' },
-    { href: '/faq', label: 'FAQ' },
+    { href: '/faq', label: 'Apex Lab' },
     { href: '/apply', label: 'Join Us' }
   ];
 </script>
