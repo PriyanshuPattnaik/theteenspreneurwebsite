@@ -1,770 +1,485 @@
+<!--
+  Apex Lab — Retro-Cyber (Warm) Svelte Page
+  ---------------------------------------------------------------
+  Single-file Svelte component. Drop into SvelteKit as +page.svelte or use as a component.
+
+  Visual brief:
+  - Warm retro-cyber palette inspired by user images: muted reds, burnt orange, warm greys, neon green accent.
+  - Subtle film grain, light leaks, and analog textures; minimal purple; neon-green highlights.
+  - Cinematic typography, invitation-style copy (exclusive but educational).
+  - Responsive, accessible, and SSR-aware (onMount guards).
+
+  Notes for assets:
+  - Replace image paths with your project's static/public paths if needed.
+  - Example asset names used here: /images/warm-bust.jpg, /images/film-grain.png, /images/light-leak.png
+-->
+
 <script lang="ts">
-  import { onMount } from 'svelte';
-  
-  let currentFieldIndex = 0;
-  let glitchText = '';
-  
+  import { onMount, onDestroy } from 'svelte';
+  import { cubicOut } from 'svelte/easing';
+  import { tweened } from 'svelte/motion';
+
+  // --------------------
+  // Config / Assets
+  // --------------------
+  const ASSETS = {
+    hero: '/images/warm-bust.jpeg',        // user provided references (adjust if needed)
+    wire: '/images/film-grain.jpeg',
+    bust: '/images/film-grain.jpeg',
+    filmGrain: '/images/film-grain.jpeg',      // optional overlay
+    lightLeak: '/images/warm-bust.png'
+  } as const;
+
+  // --------------------
+  // Content (voice: exclusive, warm, honest)
+  // --------------------
+  const headline = 'Apex Lab — 3 weeks. Ship what matters.';
+  const subhead = `A small, focused builder sprint for high-schoolers. Build AI for whatever you’re obsessed with — music, climate, healthcare, sports, or something completely yours. We guide; you create.`;
+  const cta = 'Secure your spot — $50';
+  const kicker = 'Limited seats • hands-on mentorship • real projects';
+
   const fields = [
-    { name: 'Neuroscience & Brain Tech', project: 'Mind-Reading AI that decodes emotions from brainwaves' },
-    { name: 'Healthcare & Medical AI', project: 'AI Doctor that diagnoses diseases better than WebMD' },
-    { name: 'Climate Science & Environmental Tech', project: 'Wildfire Prediction AI using satellite data' },
-    { name: 'Space Technology & Astronomy', project: 'Planet Hunter AI that discovers new worlds' },
-    { name: 'Agricultural Innovation', project: 'Crop Disease AI that saves farms from devastation' },
-    { name: 'Fintech & Economic Analysis', project: 'Market Crash Predictor that spots bubbles before they burst' }
+    { name: 'Healthcare & Medical AI', short: 'diagnostics, patient-first prototypes' },
+    { name: 'Climate & Environment', short: 'satellite, prediction, local impact' },
+    { name: 'Music & Sound', short: 'audio modelling, tools for artists' },
+    { name: 'Robotics & Controls', short: 'embedded ML, sensors' },
+    { name: 'Sports & Biomechanics', short: 'motion analysis, coaching feedback' },
+    { name: 'Art & Vision', short: 'creative tools & visual search' }
   ];
-  
+
   const faqs = [
-    {
-      question: "i've never coded before. can i still join?",
-      answer: "hell yeah. that's the point. we start from absolute zero and get you building insane AI projects in 3 weeks. some of our best students will come in knowing nothing."
-    },
-    {
-      question: "what if i can't attend all live sessions?",
-      answer: "all sessions are recorded. but honestly? the live energy is where the magic happens. you'll want to be there when we're debugging code at 11pm and having breakthrough moments."
-    },
-    {
-      question: "how do you choose which project wins in each field?",
-      answer: "simple. everyone in your field votes. democracy in action. the project with the most votes becomes THE project everyone builds together."
-    },
-    {
-      question: "will this actually help with college applications?",
-      answer: "dude. imagine walking into a stanford interview with an AI that predicts heart disease. think that might stand out from the 47th calculator app?"
-    },
-    {
-      question: "what happens after the 3 weeks?",
-      answer: "you get lifetime access to our community. we help you polish your project, write about it, and use it to get into your dream school or land internships."
-    }
+    { q: "I’m new to coding. Is this for me?", a: 'Yes. We start with fundamentals through projects. Curiosity matters more than experience.' },
+    { q: 'How intensive is it?', a: 'Two to three focused live sessions a week. Expect a mix of demo, workshop, and pair-programming.' },
+    { q: 'What does $50 cover?', a: 'Mentorship, recorded lessons, community access, and live feedback. If it’s not useful, we refund.' },
+    { q: 'Will it help college apps?', a: 'Maybe. Better question: will you build something real worth talking about? That’s what counts.' }
   ];
-  
-  onMount(() => {
-    // Glitch effect for hero text
-    const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    let originalText = 'stop building projects nobody cares about';
-    
-    const glitchInterval = setInterval(() => {
-      glitchText = originalText.split('').map(char => {
-        if (Math.random() < 0.1) {
-          return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+
+  // --------------------
+  // Local state
+  // --------------------
+  let particleCanvas: HTMLCanvasElement | null = null;
+  let ctx: CanvasRenderingContext2D | null = null;
+  let particles: Array<any> = [];
+  let raf = 0;
+
+  let expandedFaq: number | null = null;
+  function toggleFaq(i: number) {
+    expandedFaq = expandedFaq === i ? null : i;
+  }
+
+  // small headline ticker rotation
+  let tickIndex = 0;
+  let tickerInterval: ReturnType<typeof setInterval> | null = null;
+
+  // subtle typewriter for the hero (progressive reveal)
+  const heroTyped = tweened(0, { duration: 700, easing: cubicOut });
+
+  // --------------------
+  // Particles (warm glass specks)
+  // --------------------
+  function rand(min = 0, max = 1) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function initCanvas() {
+    if (!particleCanvas) return;
+    ctx = particleCanvas.getContext('2d');
+    if (!ctx) return;
+    resizeCanvas();
+    createParticles(80);
+    animate();
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  function resizeCanvas() {
+    if (!particleCanvas || !ctx) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = particleCanvas.clientWidth;
+    const h = particleCanvas.clientHeight;
+    particleCanvas.width = Math.max(1, Math.floor(w * dpr));
+    particleCanvas.height = Math.max(1, Math.floor(h * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function createParticles(n = 80) {
+    particles = [];
+    const w = particleCanvas?.clientWidth || 0;
+    const h = particleCanvas?.clientHeight || 0;
+    for (let i = 0; i < n; i++) {
+      particles.push({
+        x: rand(0, w),
+        y: rand(0, h),
+        r: rand(0.6, 2.6),
+        vx: rand(-0.12, 0.12),
+        vy: rand(-0.08, 0.08),
+        a: rand(0.15, 0.55)
+      });
+    }
+  }
+
+  function animate() {
+    if (!ctx || !particleCanvas) return;
+    const w = particleCanvas.clientWidth;
+    const h = particleCanvas.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10;
+      if (p.y > h + 10) p.y = -10;
+
+      ctx.beginPath();
+      ctx.globalAlpha = p.a;
+      ctx.fillStyle = 'rgba(200,230,200,0.9)'; // soft warm speck (subtle greenish)
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    raf = requestAnimationFrame(animate);
+  }
+
+  // --------------------
+  // Ticker rotation
+  // --------------------
+  function startTicker() {
+    tickerInterval = setInterval(() => {
+      tickIndex = (tickIndex + 1) % fields.length;
+    }, 2800);
+  }
+
+  // --------------------
+  // Intersection reveal (simple)
+  // --------------------
+  let revealObs: IntersectionObserver | null = null;
+  function initReveal() {
+    if (typeof window === 'undefined') return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    revealObs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          (e.target as HTMLElement).classList.add('is-visible');
+          revealObs && revealObs.unobserve(e.target);
         }
-        return char;
-      }).join('');
-      
-      setTimeout(() => {
-        glitchText = originalText;
-      }, 100);
-    }, 3000);
-    
-    // Cycle through fields
-    const fieldInterval = setInterval(() => {
-      currentFieldIndex = (currentFieldIndex + 1) % fields.length;
-    }, 2500);
-    
-    return () => {
-      clearInterval(glitchInterval);
-      clearInterval(fieldInterval);
-    };
+      }
+    }, { threshold: 0.18 });
+    document.querySelectorAll('[data-show]').forEach(el => revealObs!.observe(el));
+  }
+
+  // --------------------
+  // Lifecycle
+  // --------------------
+  onMount(() => {
+    // small delay for typed reveal
+    heroTyped.set(1);
+    startTicker();
+    initCanvas();
+    initReveal();
+  });
+
+  onDestroy(() => {
+    if (tickerInterval) clearInterval(tickerInterval);
+    if (raf) cancelAnimationFrame(raf);
+    window.removeEventListener('resize', resizeCanvas);
+    revealObs && revealObs.disconnect();
   });
 </script>
 
 <svelte:head>
-  <title>The Apex Lab - Build AI Projects That Actually Matter</title>
-  <meta name="description" content="3-week intensive where ambitious teens build college-winning AI projects in their dream field. From Scratch to AI mastery." />
+  <title>Apex Lab — 3-week builder sprint</title>
+  <meta name="description" content="Apex Lab — small cohort, handcrafted mentorship, build AI for the field you care about. $50." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <!-- Fonts chosen to fit warm-retro-cyber aesthetic -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 </svelte:head>
 
-<main class="apex-lab">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="grid-overlay"></div>
-    <div class="container">
-      <div class="hero-content">
-        <h1 class="glitch-text">
-          {glitchText || 'stop building projects nobody cares about'}
-        </h1>
-        
-        <div class="hero-subtext">
-          <p>spent 4 years grinding generic coding projects for college apps.</p>
-          <p>learned the hard way: admissions officers don't care about your 47th todo app.</p>
-          <p>they want to see you solve real problems in fields you actually love.</p>
+<main class="page">
+  <!-- hero -->
+  <section class="hero" aria-label="Apex Lab hero">
+    <canvas class="hero-canvas" bind:this={particleCanvas} aria-hidden="true"></canvas>
+
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-inner">
+      <div class="hero-left" data-show>
+        <h1 class="hero-title">{headline}</h1>
+        <p class="hero-sub">{subhead}</p>
+
+        <div class="hero-cta">
+          <a class="btn main" href="#apply">{cta}</a>
+          <div class="kicker">{kicker}</div>
         </div>
-        
-        <div class="field-showcase">
-          <div class="field-label">build something that matters in:</div>
-          <div class="rotating-field">
-            <span class="field-name">{fields[currentFieldIndex].name}</span>
-            <div class="project-preview">{fields[currentFieldIndex].project}</div>
-          </div>
+
+        <div class="hero-meta" aria-hidden="true">
+          <div class="meta-pill">genesis cohort</div>
+          <div class="meta-dot"></div>
+          <div class="meta-pill">3 weeks</div>
+          <div class="meta-dot"></div>
+          <div class="meta-pill">limited to 25</div>
         </div>
-        
-        <div class="cta-section">
-          <button class="cta-button primary">
-            <span>join the apex lab</span>
-            <div class="button-glow"></div>
-          </button>
-          <div class="price-tag">$50 for 3 weeks + lifetime community</div>
-        </div>
+      </div>
+
+      <div class="hero-right" data-show>
+        <figure class="hero-card">
+          <img src={ASSETS.hero} alt="Apex mood" loading="eager" />
+          <figcaption>an invitation to build with purpose</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="hero-bottom" aria-hidden="true">
+      <div class="ticker">
+        <div class="tick-item">{fields[tickIndex].name} — {fields[tickIndex].short}</div>
       </div>
     </div>
   </section>
 
-  <!-- Problem Section -->
-  <section class="problem">
-    <div class="container">
-      <div class="problem-content">
-        <h2>here's what nobody tells you about college apps</h2>
-        
-        <div class="problem-grid">
-          <div class="problem-item">
-            <div class="problem-icon">❌</div>
-            <h3>generic projects blend in</h3>
-            <p>weather apps, calculators, basic websites - admissions officers see thousands of these</p>
-          </div>
-          
-          <div class="problem-item">
-            <div class="problem-icon">😴</div>
-            <h3>coding tutorials are boring</h3>
-            <p>follow along videos teaching you to build the same projects everyone else builds</p>
-          </div>
-          
-          <div class="problem-item">
-            <div class="problem-icon">🎯</div>
-            <h3>no connection to your passion</h3>
-            <p>want to study neuroscience but building random apps? that makes zero sense.</p>
-          </div>
-        </div>
+  <!-- stripe (image left / text right) -->
+  <section class="stripe" aria-label="the vibe">
+    <div class="container stripe-grid">
+      <figure class="stripe-image" data-show>
+        <img src={ASSETS.wire} alt="wireframe bust" loading="lazy" />
+      </figure>
+
+      <div class="stripe-text" data-show>
+        <h2 class="stripe-title">This isn’t a club for everyone.</h2>
+        <p class="stripe-lead">You don’t need permission to build. You need a place that pushes you, gives honest feedback and teams that will not accept anything half-done. Apex is that place.</p>
+
+        <ul class="stripe-list">
+          <li><strong>Zero-to-shipped</strong> project in 21 days</li>
+          <li><strong>Small cohort</strong> — focused feedback and real accountability</li>
+          <li><strong>Mentors</strong> who actually ship products, not slides</li>
+        </ul>
+
+        <p class="stripe-note">$50 — less than your monthly coffee habit. Real outcomes. Real telling stories.</p>
       </div>
     </div>
   </section>
 
-  <!-- Solution Section -->
-  <section class="solution">
+  <!-- program timeline -->
+  <section class="program" aria-label="program overview">
     <div class="container">
-      <div class="solution-content">
-        <h2>the apex lab: where python meets purpose</h2>
-        <div class="solution-description">
-          <p>3 weeks. 9 live sessions. 1 game-changing AI project in YOUR field.</p>
-          <p>learn python from scratch → master AI fundamentals → build something that gets you noticed</p>
-        </div>
-        
-        <div class="curriculum">
-          <div class="week">
-            <div class="week-number">01</div>
-            <div class="week-content">
-              <h3>python foundations</h3>
-              <p>variables, functions, loops - but with examples from neuroscience, healthcare, and space tech</p>
-              <div class="week-outcome">outcome: your first AI-powered tool</div>
-            </div>
-          </div>
-          
-          <div class="week">
-            <div class="week-number">02</div>
-            <div class="week-content">
-              <h3>AI fundamentals</h3>
-              <p>machine learning, APIs, data analysis - the tools that power every AI breakthrough</p>
-              <div class="week-outcome">outcome: learn to build your own jarvis</div>
-            </div>
-          </div>
-          
-          <div class="week">
-            <div class="week-number">03</div>
-            <div class="week-content">
-              <h3>field-specific mastery</h3>
-              <p>vote for your project, build together, create something worthy of your college essays</p>
-              <div class="week-outcome">outcome: portfolio-ready AI project</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      <h2 class="section-title" data-show>the 3-week sprint</h2>
 
-  <!-- Fields Section -->
-  <section class="fields">
-    <div class="container">
-      <h2>choose your arena</h2>
-      <div class="fields-grid">
-        {#each fields as field, index}
-          <div class="field-card" class:active={index === currentFieldIndex}>
-            <div class="field-header">
-              <h3>{field.name}</h3>
-            </div>
-            <div class="field-project">
-              <strong>build:</strong> {field.project}
-            </div>
-            <div class="field-impact">
-              impact: college admissions + potential internships + real-world applications
-            </div>
+      <ol class="timeline">
+        <li data-show>
+          <div class="node">Week 1</div>
+          <div class="stage">
+            <h3>Foundations through projects</h3>
+            <p>Hands-on Python, datasets, and small models. You’ll ship a working prototype in your domain.</p>
+          </div>
+        </li>
+        <li data-show>
+          <div class="node">Week 2</div>
+          <div class="stage">
+            <h3>Build the intelligence</h3>
+            <p>Data pipelines, model choice, eval, and making your project reliable enough to demo.</p>
+          </div>
+        </li>
+        <li data-show>
+          <div class="node">Week 3</div>
+          <div class="stage">
+            <h3>Ship + story</h3>
+            <p>Deploy a public demo, polish the readme, and prepare a crisp narrative for anyone who asks — mentors will help you tell it.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="fields-grid" data-show>
+        {#each fields as f, i}
+          <div class={"field-card " + (i % 2 === 0 ? 'alt' : '')}>
+            <div class="field-name">{f.name}</div>
+            <div class="field-short">{f.short}</div>
           </div>
         {/each}
       </div>
     </div>
   </section>
 
-  <!-- Community Section -->
-  <section class="community">
-    <div class="container">
-      <div class="community-content">
-        <h2>join the builders tribe</h2>
-        <div class="community-features">
-          <div class="feature">
-            <h3>exclusive discord</h3>
-            <p>24/7 access to mentors and fellow builders who get your ambition</p>
-          </div>
-          <div class="feature">
-            <h3>weekly office hours</h3>
-            <p>direct access to me for project help, college app advice, and career guidance</p>
-          </div>
-          <div class="feature">
-            <h3>demo day events</h3>
-            <p>showcase your project to peers, parents, and industry mentors</p>
-          </div>
-        </div>
-      </div>
+  <!-- gallery / vibes -->
+  <section class="gallery" aria-label="visuals">
+    <div class="container gallery-grid">
+      <figure class="vframe" data-show>
+        <img src={ASSETS.bust} alt="vibe bust" loading="lazy" />
+        <figcaption>learn fast • ship clean • be remembered</figcaption>
+      </figure>
+
+      <figure class="vframe" data-show>
+        <img src={ASSETS.hero} alt="studio" loading="lazy" />
+        <figcaption>small cohort • serious energy • no fluff</figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section class="testimonials">
+  <!-- faq -->
+  <section class="faq" id="faq" aria-label="frequently asked questions">
     <div class="container">
-      <h2>what builders are saying</h2>
-      <div class="testimonial-grid">
-        <div class="testimonial">
-          <div class="quote">"built an AI that predicts crop diseases. got into 3 top agriculture programs."</div>
-          <div class="author">- sarah, 17, future agricultural engineer</div>
-        </div>
-        <div class="testimonial">
-          <div class="quote">"my brain-computer interface project became my whole college essay. stanford here i come."</div>
-          <div class="author">- marcus, 16, aspiring neuroscientist</div>
-        </div>
-        <div class="testimonial">
-          <div class="quote">"went from never coding to building AI that spots cancer. internship offers started rolling in."</div>
-          <div class="author">- priya, 17, pre-med track</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <section class="faq">
-    <div class="container">
-      <h2>questions from future builders</h2>
+      <h2 class="section-title" data-show>questions from future builders</h2>
       <div class="faq-list">
-        {#each faqs as faq, index}
-          <div class="faq-item">
-            <h3 class="faq-question">{faq.question}</h3>
-            <div class="faq-answer">{faq.answer}</div>
+        {#each faqs as f, i}
+          <div class={"faq-item " + (expandedFaq === i ? 'open' : '')}>
+            <button class="q" on:click={() => toggleFaq(i)} aria-expanded={expandedFaq === i} aria-controls={`a-${i}`}>
+              <span>{f.q}</span>
+              <span class="sym">{expandedFaq === i ? '\u2212' : '\u002b'}</span>
+            </button>
+            <div id={`a-${i}`} class="a" hidden={expandedFaq !== i} aria-hidden={expandedFaq !== i}>{f.a}</div>
           </div>
         {/each}
       </div>
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="final-cta">
-    <div class="container">
-      <div class="cta-content">
-        <h2>stop building what everyone else builds</h2>
-        <p>3 weeks from now, you could have an AI project that gets you into your dream school.</p>
-        <p>or you could keep building todo apps and wonder why you're not getting noticed.</p>
-        
-        <div class="urgency">
-          <p>s1 applicatios are live now. limited to 25 ambitious builders.</p>
-        </div>
-        
-        <button class="cta-button primary large">
-          <span>secure your spot - $10</span>
-          <div class="button-glow"></div>
-        </button>
-        
-        <div class="guarantee">
-          <p>30-day money back guarantee. if you don't build something portfolio-worthy, we refund.</p>
-        </div>
-      </div>
+  <!-- final cta -->
+  <section class="final" id="apply" aria-label="apply">
+    <div class="container final-inner" data-show>
+      <h2 class="final-title">Build something worth remembering</h2>
+      <p class="final-sub">Three weeks. Small group. Real work. If it’s not useful, we’ll refund you. Simple.</p>
+      <a class="btn primary big" href="https://unfounders.com/apply" role="button">{cta}</a>
+      <p class="final-small">Limited to 25 spots — genesis cohort.</p>
     </div>
   </section>
 </main>
 
 <style>
-  /* CSS Variables for Retro Cyberpunk Theme */
-  :root {
-    --neon-green: #00ff41;
-    --neon-pink: #ff0080;
-    --neon-blue: #00d4ff;
-    --dark-bg: #0a0a0a;
-    --darker-bg: #050505;
-    --grid-color: rgba(0, 255, 65, 0.2);
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --text-muted: #808080;
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  .apex-lab {
-    background: var(--dark-bg);
-    color: var(--text-primary);
-    font-family: 'Courier New', monospace;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  /* Grid Overlay */
-  .grid-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* Hero Section */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
-  }
-
-  .hero-content {
-    text-align: center;
-    z-index: 2;
-  }
-
-  .glitch-text {
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: bold;
-    margin-bottom: 2rem;
-    color: var(--neon-green);
-    text-shadow: 
-      0 0 10px var(--neon-green),
-      0 0 20px var(--neon-green),
-      0 0 40px var(--neon-green);
-    letter-spacing: -2px;
-    line-height: 1.1;
-  }
-
-  .hero-subtext {
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
-    color: var(--text-secondary);
-  }
-
-  .hero-subtext p {
-    margin-bottom: 0.5rem;
-  }
-
-  .field-showcase {
-    margin-bottom: 4rem;
-    padding: 2rem;
-    border: 1px solid var(--neon-green);
-    background: rgba(0, 255, 65, 0.05);
-  }
-
-  .field-label {
-    font-size: 1rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-
-  .rotating-field {
-    min-height: 120px;
-  }
-
-  .field-name {
-    font-size: 2rem;
-    color: var(--neon-pink);
-    font-weight: bold;
-    display: block;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px var(--neon-pink);
-  }
-
-  .project-preview {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    font-style: italic;
-  }
-
-  .cta-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .cta-button {
-    position: relative;
-    background: transparent;
-    border: 2px solid var(--neon-green);
-    color: var(--neon-green);
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-family: inherit;
-    cursor: pointer;
-    text-transform: lowercase;
-    transition: all 0.3s ease;
-    overflow: hidden;
-  }
-
-  .cta-button:hover {
-    background: var(--neon-green);
-    color: var(--dark-bg);
-    box-shadow: 0 0 30px var(--neon-green);
-  }
-
-  .cta-button.large {
-    padding: 1.5rem 3rem;
-    font-size: 1.3rem;
-  }
-
-  .button-glow {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.6s ease;
-  }
-
-  .cta-button:hover .button-glow {
-    left: 100%;
-  }
-
-  .price-tag {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-  }
-
-  /* Problem Section */
-  .problem {
-    padding: 6rem 0;
-    background: var(--darker-bg);
-  }
-
-  .problem h2 {
-    font-size: 2.5rem;
-    color: var(--neon-pink);
-    text-align: center;
-    margin-bottom: 3rem;
-    text-shadow: 0 0 20px var(--neon-pink);
-  }
-
-  .problem-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
-
-  .problem-item {
-    padding: 2rem;
-    border: 1px solid rgba(255, 0, 128, 0.3);
-    background: rgba(255, 0, 128, 0.05);
-    text-align: center;
-  }
-
-  .problem-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
-  .problem-item h3 {
-    color: var(--neon-pink);
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-  }
-
-  /* Solution Section */
-  .solution {
-    padding: 6rem 0;
-  }
-
-  .solution h2 {
-    font-size: 2.5rem;
-    color: var(--neon-blue);
-    text-align: center;
-    margin-bottom: 2rem;
-    text-shadow: 0 0 20px var(--neon-blue);
-  }
-
-  .solution-description {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 4rem;
-    color: var(--text-secondary);
-  }
-
-  .curriculum {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .week {
-    display: flex;
-    gap: 2rem;
-    padding: 2rem;
-    border: 1px solid var(--neon-blue);
-    background: rgba(0, 212, 255, 0.05);
-    align-items: flex-start;
-  }
-
-  .week-number {
-    font-size: 3rem;
-    color: var(--neon-blue);
-    font-weight: bold;
-    text-shadow: 0 0 20px var(--neon-blue);
-    min-width: 80px;
-  }
-
-  .week-content h3 {
-    color: var(--neon-blue);
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .week-outcome {
-    margin-top: 1rem;
-    color: var(--neon-green);
-    font-weight: bold;
-  }
-
-  /* Fields Section */
-  .fields {
-    padding: 6rem 0;
-    background: var(--darker-bg);
-  }
-
-  .fields h2 {
-    font-size: 2.5rem;
-    color: var(--neon-green);
-    text-align: center;
-    margin-bottom: 3rem;
-    text-shadow: 0 0 20px var(--neon-green);
-  }
-
-  .fields-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-  }
-
-  .field-card {
-    padding: 2rem;
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    background: rgba(0, 255, 65, 0.05);
-    transition: all 0.3s ease;
-  }
-
-  .field-card.active {
-    border-color: var(--neon-green);
-    background: rgba(0, 255, 65, 0.1);
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
-  }
-
-  .field-card h3 {
-    color: var(--neon-green);
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .field-project {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-  }
-
-  .field-impact {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-style: italic;
-  }
-
-  /* Community Section */
-  .community {
-    padding: 6rem 0;
-  }
-
-  .community h2 {
-    font-size: 2.5rem;
-    color: var(--neon-pink);
-    text-align: center;
-    margin-bottom: 3rem;
-    text-shadow: 0 0 20px var(--neon-pink);
-  }
-
-  .community-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .feature {
-    padding: 2rem;
-    border: 1px solid rgba(255, 0, 128, 0.3);
-    background: rgba(255, 0, 128, 0.05);
-    text-align: center;
-  }
-
-  .feature h3 {
-    color: var(--neon-pink);
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  /* Testimonials */
-  .testimonials {
-    padding: 6rem 0;
-    background: var(--darker-bg);
-  }
-
-  .testimonials h2 {
-    font-size: 2.5rem;
-    color: var(--neon-blue);
-    text-align: center;
-    margin-bottom: 3rem;
-    text-shadow: 0 0 20px var(--neon-blue);
-  }
-
-  .testimonial-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-  }
-
-  .testimonial {
-    padding: 2rem;
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    background: rgba(0, 212, 255, 0.05);
-  }
-
-  .quote {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-  }
-
-  .author {
-    color: var(--neon-blue);
-    font-size: 0.9rem;
-  }
-
-  /* FAQ Section */
-  .faq {
-    padding: 6rem 0;
-  }
-
-  .faq h2 {
-    font-size: 2.5rem;
-    color: var(--neon-green);
-    text-align: center;
-    margin-bottom: 3rem;
-    text-shadow: 0 0 20px var(--neon-green);
-  }
-
-  .faq-list {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .faq-item {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    background: rgba(0, 255, 65, 0.05);
-  }
-
-  .faq-question {
-    color: var(--neon-green);
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-
-  .faq-answer {
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  /* Final CTA */
-  .final-cta {
-    padding: 8rem 0;
-    background: var(--darker-bg);
-    text-align: center;
-  }
-
-  .final-cta h2 {
-    font-size: 3rem;
-    color: var(--neon-pink);
-    margin-bottom: 2rem;
-    text-shadow: 0 0 20px var(--neon-pink);
-  }
-
-  .final-cta p {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-  }
-
-  .urgency {
-    margin: 2rem 0;
-    padding: 1rem;
-    border: 1px solid var(--neon-pink);
-    background: rgba(255, 0, 128, 0.1);
-  }
-
-  .urgency p {
-    color: var(--neon-pink);
-    font-weight: bold;
-  }
-
-  .guarantee {
-    margin-top: 2rem;
-  }
-
-  .guarantee p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-style: italic;
-  }
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .container {
-      padding: 0 1rem;
-    }
-    
-    .week {
-      flex-direction: column;
-      text-align: center;
-    }
-    
-    .week-number {
-      min-width: auto;
-    }
-    
-    .field-showcase {
-      padding: 1rem;
-    }
-    
-    .cta-section {
-      margin-top: 2rem;
-    }
-  }
+  /* --------------------
+     Root theme
+  -------------------- */
+  :root{
+    --bg:#0b0a0a; /* warm dark */
+    --panel:#111010;
+    --muted:#b7b0a8;
+    --ink:#f3efe9;
+    --accent:#12ff7a; /* neon green accent */
+    --warm:#d86b3a; /* burnt orange */
+    --metal:#c5bdb6;
+    --glass:rgba(255,255,255,0.03);
+    --border:rgba(255,255,255,0.06);
+    --radius:14px;
+    --shadow:0 16px 40px rgba(2,2,2,0.6);
+  }
+
+  /* baseline */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+  img{display:block;max-width:100%;height:auto}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* --------------------
+     HERO
+  -------------------- */
+  .hero{position:relative;min-height:82vh;display:flex;align-items:center;padding:42px 0;overflow:hidden}
+  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+  .hero-overlay{position:absolute;inset:0;background-image:linear-gradient(180deg, rgba(8,6,6,0.46), rgba(6,5,5,0.6));mix-blend-mode:overlay;pointer-events:none;z-index:1}
+  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center}
+
+  .hero-left{padding:28px 0}
+  .hero-title{font-family:'Bebas Neue', 'Orbitron', sans-serif;font-size:clamp(34px,6.2vw,64px);line-height:0.98;margin:0 0 12px;color:var(--accent);letter-spacing:0.02em;text-transform:uppercase;text-shadow:0 6px 32px rgba(18,255,122,0.06)}
+  .hero-sub{color:var(--muted);max-width:52ch;margin:12px 0 18px;font-size:1.02rem}
+
+  .hero-cta{display:flex;align-items:center;gap:14px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:var(--panel);border:1px solid var(--border);cursor:pointer;font-weight:700}
+  .btn.main{background:linear-gradient(180deg, rgba(18,255,122,0.07), rgba(18,255,122,0.02));border:1px solid rgba(18,255,122,0.14);color:var(--accent);}
+  .kicker{color:var(--muted);font-size:0.88rem}
+
+  .hero-meta{display:flex;align-items:center;gap:10px;margin-top:18px}
+  .meta-pill{background:var(--glass);padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:0.78rem;color:var(--muted)}
+  .meta-dot{width:6px;height:6px;border-radius:999px;background:var(--border)}
+
+  .hero-right{display:flex;justify-content:center}
+  .hero-card{width:100%;max-width:420px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12))}
+  .hero-card img{display:block;width:100%;height:100%;object-fit:cover}
+  .hero-card figcaption{padding:10px 12px;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(0,0,0,0.08));font-size:0.86rem;color:var(--muted)}
+
+  .hero-bottom{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;z-index:3}
+  .ticker{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:8px 16px;border-radius:999px;border:1px solid var(--border)}
+  .tick-item{font-weight:600;color:var(--metal);font-size:0.92rem}
+
+  /* --------------------
+     stripe
+  -------------------- */
+  .stripe{padding:64px 0;border-top:1px solid rgba(255,255,255,0.02)}
+  .stripe-grid{display:grid;grid-template-columns:380px 1fr;gap:32px;align-items:center}
+  .stripe-image{border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+  .stripe-text{padding:6px}
+  .stripe-title{font-family:'Bebas Neue', 'Orbitron';font-size:clamp(22px,4.2vw,40px);margin:0 0 10px;color:var(--warm)}
+  .stripe-lead{color:var(--muted);margin:0 0 12px}
+  .stripe-list{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px}
+  .stripe-list li{color:var(--ink);font-weight:600}
+  .stripe-note{color:var(--muted);font-size:0.9rem}
+
+  /* --------------------
+     timeline
+  -------------------- */
+  .program{padding:54px 0}
+  .section-title{font-family:'Bebas Neue';font-size:20px;color:var(--metal);text-transform:uppercase;letter-spacing:0.12em;margin:0 0 20px}
+  .timeline{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:16px}
+  .timeline li{display:grid;grid-template-columns:90px 1fr;gap:18px;align-items:start;padding:14px;border-radius:12px;background:var(--panel);border:1px solid var(--border)}
+  .node{font-family:'Orbitron',sans-serif;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:8px;text-align:center;font-weight:700;color:var(--accent)}
+  .stage h3{margin:0 0 8px;color:var(--metal)}
+  .fields-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:18px}
+  .field-card{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid var(--border)}
+  .field-card.alt{background:linear-gradient(180deg, rgba(18,255,122,0.03), transparent)}
+  .field-name{font-weight:800;color:var(--accent)}
+  .field-short{color:var(--muted);margin-top:6px}
+
+  /* --------------------
+     gallery
+  -------------------- */
+  .gallery{padding:40px 0}
+  .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .vframe{border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+  .vframe figcaption{padding:8px;background:linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06));color:var(--muted);font-weight:600}
+
+  /* --------------------
+     faq
+  -------------------- */
+  .faq{padding:46px 0;border-top:1px solid rgba(255,255,255,0.02)}
+  .faq-list{display:grid;gap:10px}
+  .faq-item{border-radius:10px;background:var(--panel);padding:8px;border:1px solid var(--border)}
+  .faq-item.open{box-shadow:0 10px 26px rgba(0,0,0,0.6)}
+  .faq-item .q{display:flex;justify-content:space-between;align-items:center;background:transparent;border:0;padding:12px;color:var(--ink);width:100%;font-weight:700;cursor:pointer}
+  .faq-item .a{padding:10px 12px;color:var(--muted)}
+
+  /* --------------------
+     final
+  -------------------- */
+  .final{padding:70px 0;background:linear-gradient(180deg, rgba(18,255,122,0.02), transparent)}
+  .final-inner{text-align:center}
+  .final-title{font-family:'Bebas Neue';font-size:clamp(28px,5vw,44px);margin:0 0 12px;color:var(--warm)}
+  .final-sub{color:var(--muted);max-width:60ch;margin:0 auto 18px}
+  .btn.primary.big{padding:16px 22px;border-radius:14px;background:linear-gradient(180deg,var(--accent),#47d88c);color:#03120b;font-weight:900;border:1px solid rgba(255,255,255,0.06)}
+  .final-small{color:var(--metal);margin-top:12px}
+
+  /* --------------------
+     reveal animations
+  -------------------- */
+  [data-show]{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+  .is-visible{opacity:1;transform:none}
+
+  /* --------------------
+     responsive
+  -------------------- */
+  @media (max-width:1024px){
+    .hero-inner{grid-template-columns:1fr 320px}
+    .stripe-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:720px){
+    .hero-inner{grid-template-columns:1fr;gap:24px}
+    .hero-right{order:2}
+    .hero-left{order:1}
+    .hero{min-height:auto;padding:32px 0}
+    .container{padding:0 16px}
+    .gallery-grid{grid-template-columns:1fr}
+    .fields-grid{grid-template-columns:1fr}
+  }
+
+  /* --------------------
+     small utilities
+  -------------------- */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
