@@ -1,6 +1,15 @@
 [build]
   command = "npm run build"
-  publish = "build"
+  publish = ".svelte-kit/output/client"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
+
+# Enable SSR via Netlify Functions (Node runtime)
+[functions]
+  node_bundler = "esbuild"
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+  [plugins.inputs]
+    buildDir = ".svelte-kit/output/client"
