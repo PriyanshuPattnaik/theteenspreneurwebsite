@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = ".svelte-kit/output/client"
+  publish = "build"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
@@ -10,3 +10,5 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
