@@ -25,7 +25,7 @@
   // Enhanced Content (Farza-inspired voice)
   // --------------------
   const headline = 'ApexLab — 3 WEEKS. Build AI that actually matters';
-  const subhead = `3 weeks. Real projects. Zero BS. Join an exclusive cohort of 25 high schoolers who ship AI projects in neuroscience, healthcare, climate, space, agriculture, or fintech. For $50 — less than your monthly coffee habit.`;
+  const subhead = `3 weeks. Real Knowledge. Zero BS. Join an exclusive cohort of 25 high schoolers who ship AI projects in neuroscience, healthcare, climate, space, agriculture and fintech. For a amount less than your monthly coffee habit.`;
   const cta = 'Lock in your spot now';
   const kicker = '25 spots only • genesis cohort • ships in 3 weeks';
 
@@ -672,7 +672,7 @@
 
       <div class="final-guarantee">
         <span class="guarantee-icon">🛡️</span>
-        <span>100% money-back guarantee if you don't ship a real project</span>
+        <span>100% free enrollment to the next cohort if you don't ship a real project</span>
       </div>
     </div>
   </section>
