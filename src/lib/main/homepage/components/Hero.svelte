@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   
   let mounted = false;
   let currentPhase = 0;
@@ -9,6 +10,7 @@
   let showCTA = false;
   let glitchActive = false;
   let matrixLines: string[] = [];
+  let innerWidth = 1200; // Default width for SSR
   
   const hooks = [
     "while you're asking for permission, gen-z is printing money.",
@@ -25,6 +27,9 @@
   
   onMount(() => {
     mounted = true;
+    if (browser) {
+      innerWidth = window.innerWidth;
+    }
     generateMatrixLines();
     
     setTimeout(() => {
@@ -38,7 +43,7 @@
   });
   
   function generateMatrixLines() {
-    const lineCount = window.innerWidth < 768 ? 8 : 15;
+    const lineCount = innerWidth < 768 ? 8 : 15;
     for (let i = 0; i < lineCount; i++) {
       let line = '';
       for (let j = 0; j < 20; j++) {
@@ -89,24 +94,26 @@
   }
 
   function handleRequestAccess() {
-    window.location.href = 'https://tally.so/r/wz2kNZ';
+    if (browser) {
+      window.location.href = 'https://tally.so/r/wz2kNZ';
+    }
   }
 </script>
 
 <section class="hero" class:mounted>
   <div class="cyber-grid">
     <div class="grid-overlay" class:show-matrix={showMatrix}>
-      {#each Array(Math.floor(window.innerWidth / 40)) as _, i}
+      {#each Array(Math.floor(innerWidth / 40)) as _, i}
         <div class="grid-line horizontal" style="top: {i * 3.33}%; animation-delay: {i * 0.03}s;"></div>
       {/each}
-      {#each Array(Math.floor(window.innerWidth / 40)) as _, i}
+      {#each Array(Math.floor(innerWidth / 40)) as _, i}
         <div class="grid-line vertical" style="left: {i * 3.33}%; animation-delay: {i * 0.03}s;"></div>
       {/each}
     </div>
     
     <div class="matrix-rain">
-      {#each Array(Math.floor(window.innerWidth / 100)) as _, i}
-        <div class="matrix-column" style="left: {i * (100 / (window.innerWidth / 100))}%; animation-delay: {i * 0.3}s;">
+      {#each Array(Math.floor(innerWidth / 100)) as _, i}
+        <div class="matrix-column" style="left: {i * (100 / (innerWidth / 100))}%; animation-delay: {i * 0.3}s;">
           {#each matrixLines as line, j}
             <div class="matrix-char" style="animation-delay: {j * 0.1}s;">{line.charAt(i % line.length)}</div>
           {/each}

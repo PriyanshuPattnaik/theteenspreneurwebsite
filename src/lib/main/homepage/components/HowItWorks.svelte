@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   
   let sectionVisible = false;
   let timelineSection: HTMLElement;
@@ -61,6 +62,8 @@
   let drops: number[] = [];
 
   onMount(() => {
+    if (!browser) return;
+    
     // Matrix effect setup
     if (matrixCanvas) {
       ctx = matrixCanvas.getContext('2d')!;

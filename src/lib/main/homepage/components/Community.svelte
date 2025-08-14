@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   
   let sectionVisible = false;
   let communitySection: HTMLElement;
@@ -8,6 +9,8 @@
   let gridLines: HTMLElement[] = [];
   
   onMount(() => {
+    if (!browser) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

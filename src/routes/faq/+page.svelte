@@ -10,6 +10,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
+  import { browser } from '$app/environment';
 
   
   // Type declaration for Lucide
@@ -23,7 +24,7 @@
     wire: '/images/film-grain.jpeg',
     bust: '/images/film-grain.jpeg',
     filmGrain: '/images/film-grain.jpeg',
-    lightLeak: '/images/warm-bust.png'
+    lightLeak: '/images/light-leak.jpeg'
   } as const;
 
   // --------------------
@@ -87,13 +88,13 @@
 
   // Initialize icons after component mounts
   function initializeIcons() {
-    if (typeof window !== 'undefined' && window.lucide) {
+    if (browser && typeof window !== 'undefined' && window.lucide) {
       window.lucide.createIcons();
     }
   }
 
   // Reactive statement to reinitialize icons when activeField changes
-  $: if (typeof window !== 'undefined' && activeField !== undefined) {
+  $: if (browser && activeField !== undefined) {
     setTimeout(initializeIcons, 10);
   }
 
@@ -164,17 +165,19 @@
   }
 
   function initCanvas() {
-    if (!particleCanvas) return;
+    if (!browser || !particleCanvas) return;
     ctx = particleCanvas.getContext('2d');
     if (!ctx) return;
     resizeCanvas();
     createParticles(120);
     animate();
-    window.addEventListener('resize', resizeCanvas);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', resizeCanvas);
+    }
   }
 
   function initMatrixRain() {
-    if (!matrixCanvas) return;
+    if (!browser || !matrixCanvas) return;
     matrixCtx = matrixCanvas.getContext('2d');
     if (!matrixCtx) return;
     resizeMatrixCanvas();
@@ -183,8 +186,8 @@
   }
 
   function resizeCanvas() {
-    if (!particleCanvas || !ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (!browser || !particleCanvas || !ctx) return;
+    const dpr = Math.min((typeof window !== 'undefined' ? window.devicePixelRatio : 1) || 1, 2);
     const w = particleCanvas.clientWidth;
     const h = particleCanvas.clientHeight;
     particleCanvas.width = Math.max(1, Math.floor(w * dpr));
@@ -193,8 +196,8 @@
   }
 
   function resizeMatrixCanvas() {
-    if (!matrixCanvas || !matrixCtx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (!browser || !matrixCanvas || !matrixCtx) return;
+    const dpr = Math.min((typeof window !== 'undefined' ? window.devicePixelRatio : 1) || 1, 2);
     const w = matrixCanvas.clientWidth;
     const h = matrixCanvas.clientHeight;
     matrixCanvas.width = Math.max(1, Math.floor(w * dpr));
@@ -319,8 +322,8 @@
   // --------------------
   let revealObs: IntersectionObserver | null = null;
   function initReveal() {
-    if (typeof window === 'undefined') return;
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!browser) return;
+    const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
     
     revealObs = new IntersectionObserver((entries) => {
@@ -335,7 +338,9 @@
       }
     }, { threshold: 0.2 });
     
-    document.querySelectorAll('[data-show]').forEach(el => revealObs!.observe(el));
+    if (browser && typeof document !== 'undefined') {
+      document.querySelectorAll('[data-show]').forEach(el => revealObs!.observe(el));
+    }
   }
 
   // --------------------
@@ -355,7 +360,9 @@
     if (fieldInterval) clearInterval(fieldInterval);
     if (raf) cancelAnimationFrame(raf);
     if (matrixRaf) cancelAnimationFrame(matrixRaf);
-    window.removeEventListener('resize', resizeCanvas);
+    if (browser && typeof window !== 'undefined') {
+      window.removeEventListener('resize', resizeCanvas);
+    }
     revealObs && revealObs.disconnect();
   });
 </script>
