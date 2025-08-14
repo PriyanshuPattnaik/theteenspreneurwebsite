@@ -4,11 +4,16 @@
   Enhanced version with more sections, better content, and amplified retro-cyber aesthetic
   Built for high school students who want to build real AI projects
 -->
+  
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
+
+  
+  // Type declaration for Lucide
+
 
   // --------------------
   // Config / Assets
@@ -41,39 +46,56 @@
       name: 'Neuroscience & Brain Tech', 
       short: 'mind-reading AI, emotion detection',
       project: 'Build AI that decodes emotions from brainwaves or creates brain-controlled games',
-      icon: '🧠'
+      icon: 'brain'
     },
     { 
       name: 'Healthcare & Medical AI', 
       short: 'disease diagnosis, medical imaging',
       project: 'Create pneumonia detectors from X-rays or heart disease predictors that beat WebMD',
-      icon: '🏥'
+      icon: 'heart-pulse'
     },
     { 
       name: 'Climate & Environmental Tech', 
       short: 'wildfire prediction, satellite analysis',
       project: 'Build wildfire prediction AI or deforestation trackers using real satellite data',
-      icon: '🌍'
+      icon: 'earth'
     },
     { 
       name: 'Space Technology & Astronomy', 
       short: 'planet hunting, asteroid tracking',
       project: 'Discover exoplanets from space data or build asteroid impact prediction systems',
-      icon: '🚀'
+      icon: 'rocket'
     },
     { 
       name: 'Agricultural Innovation', 
       short: 'crop disease detection, smart farming',
       project: 'Save farms with crop disease AI or build smart irrigation prediction systems',
-      icon: '🌾'
+      icon: 'wheat'
     },
     { 
       name: 'Fintech & Market Analysis', 
       short: 'market prediction, fraud detection',
       project: 'Build market crash predictors or fraud detection systems for transactions',
-      icon: '💰'
+      icon: 'trending-up'
     }
   ];
+
+  // Icon component function
+  function createIcon(iconName: string, size: number = 24) {
+    return `<i data-lucide="${iconName}" style="width: ${size}px; height: ${size}px;"></i>`;
+  }
+
+  // Initialize icons after component mounts
+  function initializeIcons() {
+    if (typeof window !== 'undefined' && window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Reactive statement to reinitialize icons when activeField changes
+  $: if (typeof window !== 'undefined' && activeField !== undefined) {
+    setTimeout(initializeIcons, 10);
+  }
 
   const timeline = [
     {
@@ -287,6 +309,8 @@
   function startFieldRotation() {
     fieldInterval = setInterval(() => {
       activeField = (activeField + 1) % fields.length;
+      // Re-initialize icons when field changes
+      setTimeout(initializeIcons, 50);
     }, 3500);
   }
 
@@ -323,6 +347,8 @@
     initCanvas();
     initMatrixRain();
     initReveal();
+    // Initialize icons after a short delay to ensure Lucide is loaded
+    setTimeout(initializeIcons, 100);
   });
 
   onDestroy(() => {
@@ -340,6 +366,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </svelte:head>
 
 <main class="page">
@@ -357,16 +384,16 @@
 
         <div class="hero-proof">
           <div class="proof-item">
-            <span class="proof-icon">🧠</span>
-            <span>Mind-reading AI</span>
+            <span class="proof-icon"><i data-lucide="brain"></i></span>
+            <span>learn</span>
           </div>
           <div class="proof-item">
-            <span class="proof-icon">🏥</span>
-            <span>Disease detectors</span>
+            <span class="proof-icon"><i data-lucide="hammer"></i></span>
+            <span>build</span>
           </div>
           <div class="proof-item">
-            <span class="proof-icon">🚀</span>
-            <span>Planet hunters</span>
+            <span class="proof-icon"><i data-lucide="rocket"></i></span>
+            <span>ship</span>
           </div>
         </div>
 
@@ -437,9 +464,9 @@
           <div class="why-content">
             <p class="why-lead">Most "intro to AI" courses are trash. They're either:</p>
             <ul class="why-list">
-              <li><span class="why-icon">💸</span> Expensive bootcamps that teach you to copy-paste code</li>
-              <li><span class="why-icon">📚</span> Academic courses drowning you in math you'll never use</li>
-              <li><span class="why-icon">🎪</span> Flashy programs with zero real projects to show</li>
+              <li><span class="why-icon"><i data-lucide="dollar-sign"></i></span> Expensive bootcamps that teach you to copy-paste code</li>
+              <li><span class="why-icon"><i data-lucide="book-open"></i></span> Academic courses drowning you in math you'll never use</li>
+              <li><span class="why-icon"><i data-lucide="sparkles"></i></span> Flashy programs with zero real projects to show</li>
             </ul>
             <p class="why-bottom">ApexLab fixes this. Small cohort. Real mentors who actually ship products. Projects you can show off to anyone.</p>
           </div>
@@ -525,7 +552,7 @@
                 </div>
               {:else}
                 <div class="visual-deploy">
-                  <div class="deploy-icon">🚀</div>
+                  <div class="deploy-icon"><i data-lucide="rocket"></i></div>
                   <div class="deploy-status">
                     <div class="status-dot active"></div>
                     <span>Live & Deployed</span>
@@ -539,7 +566,7 @@
 
       <div class="timeline-footer" data-show>
         <div class="footer-highlight">
-          <span class="footer-icon">⚡</span>
+          <span class="footer-icon"><i data-lucide="zap"></i></span>
           <span>Live sessions • Real mentorship • Working projects</span>
         </div>
         <div class="timeline-stats">
@@ -573,7 +600,7 @@
               class={"field-tab " + (activeField === i ? 'active' : '')}
               on:click={() => activeField = i}
             >
-              <span class="field-icon">{field.icon}</span>
+              <span class="field-icon"><i data-lucide={field.icon}></i></span>
               <span class="field-name">{field.name.split(' ')[0]}</span>
             </button>
           {/each}
@@ -588,15 +615,15 @@
           
           <div class="field-examples">
             <div class="example-item">
-              <span class="example-icon">🚀</span>
+              <span class="example-icon"><i data-lucide="database"></i></span>
               <span>Real datasets from NASA, hospitals, satellites</span>
             </div>
             <div class="example-item">
-              <span class="example-icon">⚡</span>
+              <span class="example-icon"><i data-lucide="globe"></i></span>
               <span>Deploy to web — show anyone, anywhere</span>
             </div>
             <div class="example-item">
-              <span class="example-icon">🏆</span>
+              <span class="example-icon"><i data-lucide="trophy"></i></span>
               <span>Portfolio piece that gets you noticed</span>
             </div>
           </div>
@@ -667,11 +694,11 @@
       
       <div class="final-cta">
         <a class="btn primary massive" href="https://tally.so/r/wkol9j">Secure your spot — $50</a>
-        <div class="final-urgency">⚡ 18 spots remaining</div>
+        <div class="final-urgency"><i data-lucide="zap"></i> 18 spots remaining</div>
       </div>
 
       <div class="final-guarantee">
-        <span class="guarantee-icon">🛡️</span>
+        <span class="guarantee-icon"><i data-lucide="shield-check"></i></span>
         <span>100% free enrollment to the next cohort if you don't ship a real project</span>
       </div>
     </div>
@@ -710,6 +737,59 @@
   a { color: inherit; text-decoration: none; }
   .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
+  /* Lucide Icon Styles */
+  [data-lucide] {
+    width: 1.2em;
+    height: 1.2em;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .proof-icon [data-lucide] {
+    width: 1.4em;
+    height: 1.4em;
+  }
+
+  .field-icon [data-lucide] {
+    width: 2em;
+    height: 2em;
+  }
+
+  .why-icon [data-lucide] {
+    width: 1.3em;
+    height: 1.3em;
+  }
+
+  .example-icon [data-lucide] {
+    width: 1.2em;
+    height: 1.2em;
+  }
+
+  .footer-icon [data-lucide] {
+    width: 1.2em;
+    height: 1.2em;
+  }
+
+  .deploy-icon [data-lucide] {
+    width: 2em;
+    height: 2em;
+  }
+
+  .guarantee-icon [data-lucide] {
+    width: 1.1em;
+    height: 1.1em;
+  }
+
+  .final-urgency [data-lucide] {
+    width: 1em;
+    height: 1em;
+  }
+
   /* Scanlines effect */
   .scanlines {
     position: absolute;
@@ -738,15 +818,94 @@
     z-index: 0;
   }
 
-    .stripe{padding:64px 0;border-top:1px solid rgba(255,255,255,0.02)}
-  .stripe-grid{display:grid;grid-template-columns:380px 1fr;gap:32px;align-items:center}
-  .stripe-image{border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
-  .stripe-text{padding:6px}
-  .stripe-title{font-family:'Bebas Neue', 'Orbitron';font-size:clamp(22px,4.2vw,40px);margin:0 0 10px;color:var(--warm)}
-  .stripe-lead{color:var(--muted);margin:0 0 12px}
-  .stripe-list{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px}
-  .stripe-list li{color:var(--ink);font-weight:600}
-  .stripe-note{color:var(--muted);font-size:0.9rem}
+  /* Stripe Section */
+  .stripe {
+    padding: 80px 0;
+    border-top: 1px solid rgba(255,255,255,0.02);
+    background: linear-gradient(180deg, transparent, rgba(18,255,122,0.02));
+  }
+
+  .stripe-grid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .stripe-image {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .stripe-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(18,255,122,0.1);
+  }
+
+  .stripe-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .stripe-text {
+    padding: 20px;
+  }
+
+  .stripe-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(24px, 4.2vw, 42px);
+    margin: 0 0 20px;
+    color: var(--warm);
+    line-height: 1.1;
+  }
+
+  .stripe-lead {
+    color: var(--muted);
+    margin: 0 0 24px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .stripe-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .stripe-list li {
+    color: var(--ink);
+    font-weight: 600;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .stripe-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+
+  .stripe-list strong {
+    color: var(--accent);
+  }
+
+  .stripe-note {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    padding: 16px;
+    background: rgba(18,255,122,0.05);
+    border: 1px solid rgba(18,255,122,0.1);
+    border-radius: 8px;
+  }
 
 
   .hero-overlay {
@@ -1907,6 +2066,24 @@
   }
 
   /* Responsive */
+  @media (max-width: 900px) {
+    .stripe-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .stripe-image {
+      order: -1;
+      max-width: 350px;
+      margin: 0 auto;
+    }
+
+    .stripe-text {
+      padding: 10px;
+    }
+  }
+
   @media (max-width: 1024px) {
     .hero-inner {
       grid-template-columns: 1fr;
@@ -1931,6 +2108,18 @@
     .faq-grid {
       grid-template-columns: 1fr;
       gap: 40px;
+    }
+
+    .stripe-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stripe-image {
+      order: -1;
+      max-width: 400px;
+      margin: 0 auto;
     }
     
     .field-nav {
@@ -1990,6 +2179,41 @@
     
     .field-content {
       padding: 24px;
+    }
+
+    .stripe {
+      padding: 40px 0;
+    }
+
+    .stripe-grid {
+      gap: 24px;
+    }
+
+    .stripe-image {
+      max-width: 300px;
+    }
+
+    .stripe-text {
+      padding: 0;
+    }
+
+    .stripe-title {
+      font-size: clamp(20px, 5vw, 28px);
+      margin-bottom: 16px;
+    }
+
+    .stripe-lead {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+
+    .stripe-list {
+      margin-bottom: 20px;
+    }
+
+    .stripe-list li {
+      font-size: 0.9rem;
+      padding: 4px 0;
     }
 
     .timeline-stats {

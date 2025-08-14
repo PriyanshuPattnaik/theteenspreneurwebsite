@@ -5,7 +5,11 @@ import sveltePreprocess from 'svelte-preprocess';
 
 export default {
     kit: {
-        adapter: adapter(),
+        adapter: adapter({
+            // Ensure no redirects are written to netlify.toml
+            edge: false,
+            split: false
+        }),
         alias: {
             $lib: './src/lib'
         }
