@@ -5,11 +5,8 @@
 [build.environment]
   NODE_VERSION = "20.19.0"
 
-# Enable SSR via Netlify Functions (Node runtime)
-[functions]
-  node_bundler = "esbuild"
-
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
-  [plugins.inputs]
-    buildDir = "build"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
