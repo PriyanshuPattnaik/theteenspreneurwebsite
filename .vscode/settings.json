@@ -1,3 +1,12 @@
 {
-    "zencoder.enableRepoIndexing": true
+    "zencoder.enableRepoIndexing": true,
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.useAliasesForRenames": false,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "svelte.enable-ts-plugin": true,
+    "files.associations": {
+        "*.svelte": "svelte"
+    }
 }

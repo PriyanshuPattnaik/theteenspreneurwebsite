@@ -8,6 +8,22 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	namespace svelteHTML {
+		interface HTMLAttributes<T> {
+			'aria-expanded'?: boolean | string;
+			'aria-label'?: string;
+			'data-show'?: boolean | string;
+			'data-stats'?: boolean | string;
+			'data-lucide'?: string;
+		}
+	}
+
+	interface Window {
+		lucide: {
+			createIcons: () => void;
+		};
+	}
 }
 
 export {};

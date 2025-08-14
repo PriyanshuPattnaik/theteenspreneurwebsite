@@ -12,4 +12,4 @@
 [[plugins]]
   package = "@netlify/plugin-sitemap"
   [plugins.inputs]
-    buildDir = ".svelte-kit/output/client"
+    buildDir = "build"
