@@ -24,7 +24,7 @@
       role: "Founder & CEO",
       subtitle: "The Wannabe Tony Stark",
       description: "building the impossible since he learned to code. believes teenagers don't need permission to change the world. drinks coffee like it's code fuel and codes like the matrix is real.",
-      image: "src/assets/team/priyanshu.png",
+      image: "assets/team/priyanshu.png",
       accent: "primary",
       status: "SYSTEM_ARCHITECT"
     },
@@ -33,7 +33,7 @@
       role: "Business Development & Strategy",
       subtitle: "The Neural Network",
       description: "turns chaos into systems. makes sure our rebellion actually builds something that matters. sees patterns where others see noise. the brain behind our digital revolution.",
-      image: "src/assets/team/khyati.png",
+      image: "assets/team/khyati.png",
       accent: "secondary",
       status: "VISION_CORE"
     },
@@ -42,7 +42,7 @@
       role: "Partner & Business Operations",
       subtitle: "The Reality Compiler",
       description: "takes wild ideas and makes them work in the real world. bridges dreams and delivery. speaks fluent startup and translates visions into victories.",
-      image: "src/assets/team/shubham.png",
+      image: "assets/team/shubham.png",
       accent: "tertiary",
       status: "EXECUTION_ENGINE"
     },
