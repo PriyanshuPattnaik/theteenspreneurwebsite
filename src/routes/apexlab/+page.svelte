@@ -507,6 +507,92 @@
     </div>
   </section>
 
+  <!-- Program Details Section -->
+  <section class="program-details" aria-label="program details">
+    <div class="container pd-wrap">
+      <header class="pd-head" data-show>
+        <span class="pd-badge">genesis cohort • 25 spots</span>
+        <h2 class="pd-title">Program details</h2>
+        <p class="pd-sub">Three weeks. Tight loop. High signal. You build, you ship, you show.</p>
+        <ul class="pd-meta">
+          <li class="pd-chip"><i data-lucide="calendar"></i> Sep 7 — Sep 27</li>
+          <li class="pd-chip"><i data-lucide="clock-8"></i> Apply by Sep 5</li>
+          <li class="pd-chip"><i data-lucide="video"></i> 3 live sessions / week</li>
+          <li class="pd-chip"><i data-lucide="terminal"></i> Min 1 hr live build on Discord</li>
+        </ul>
+      </header>
+
+      <div class="pd-grid">
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="alarm-clock"></i> Cohort cadence</h3>
+          <p class="pd-card-desc">We keep you in a fast feedback loop so momentum never drops.</p>
+          <ul class="pd-list">
+            <li><strong>Mon</strong>: Kickoff + scope check</li>
+            <li><strong>Wed</strong>: Live build + mentor review</li>
+            <li><strong>Sat</strong>: Demo checkpoint + ship list</li>
+            <li><strong>Daily</strong>: Async check-in thread (90 sec max)</li>
+          </ul>
+        </article>
+
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="life-buoy"></i> Mentorship & support</h3>
+          <p class="pd-card-desc">Real humans who’ve shipped products, not slide decks.</p>
+          <ul class="pd-list">
+            <li>Office hours 2x / week for unblocking</li>
+            <li>Rapid critique channel for PRs, demos, UX</li>
+            <li>Direct mentor DMs for blockers (24h SLA)</li>
+            <li>Pair-build rooms on Discord during sprints</li>
+          </ul>
+        </article>
+
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="rocket"></i> What you ship</h3>
+          <p class="pd-card-desc">A working AI project with a story you can defend.</p>
+          <ul class="pd-list">
+            <li>Deployed demo + public repo</li>
+            <li>Readme with results, tradeoffs, next steps</li>
+            <li>3-minute demo video and writeup</li>
+            <li>Feedback log from mentors and peers</li>
+          </ul>
+        </article>
+
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="id-card"></i> Admissions & cost</h3>
+          <ul class="pd-list">
+            <li><strong>Seats</strong>: 25, rolling review</li>
+            <li><strong>Investment</strong>: $50</li>
+            <li><strong>Financial aid</strong>: available on request</li>
+            <li><strong>Priority</strong>: earliest applicants reviewed first</li>
+          </ul>
+        </article>
+
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="cpu"></i> Tools & stack</h3>
+          <ul class="pd-list">
+            <li>Python, NumPy, Pandas, scikit‑learn</li>
+            <li>PyTorch for model training (starter templates)</li>
+            <li>Weights & Biases or Kaggle for experiments</li>
+            <li>Vercel/Netlify for fast deploys</li>
+          </ul>
+        </article>
+
+        <article class="pd-card" data-show>
+          <h3 class="pd-card-title"><i data-lucide="target"></i> Accountability & culture</h3>
+          <ul class="pd-list">
+            <li>Scoreboard for shipped checkpoints</li>
+            <li>Peer squads for fast review & pairing</li>
+            <li>No ghosting: 2 misses → mentor call</li>
+            <li>High bar, zero ego, lots of shipping</li>
+          </ul>
+        </article>
+      </div>
+
+      <footer class="pd-foot" data-show>
+        <p class="pd-note"><i data-lucide="info"></i> Sessions are scheduled to be friendly across time zones. Recordings available for all live sessions.</p>
+      </footer>
+    </div>
+  </section>
+
   <!-- Enhanced Timeline Section -->
   <section class="timeline-section" aria-label="program timeline">
     <div class="container">
@@ -2251,5 +2337,165 @@
     .faq-highlight {
       padding: 24px;
     }
+  }
+  
+  /* Program Details (custom styles) */
+  .program-details {
+    position: relative;
+    padding: 100px 0;
+    background:
+      radial-gradient(1200px 400px at 10% 0%, rgba(18,255,122,0.06), transparent 60%),
+      linear-gradient(180deg, rgba(18,255,122,0.03), transparent 30%),
+      linear-gradient(0deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02));
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+  }
+
+  .program-details::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(18,255,122,0.06) 0px,
+      rgba(18,255,122,0.06) 1px,
+      transparent 1px,
+      transparent 16px
+    );
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .pd-wrap {
+    display: grid;
+    gap: 40px;
+  }
+
+  .pd-head {
+    text-align: center;
+  }
+
+  .pd-badge {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), #47d88c);
+    color: #0a0908;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: var(--glow);
+    font-size: 0.8rem;
+  }
+
+  .pd-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 6vw, 56px);
+    margin: 14px 0 8px;
+    line-height: 0.95;
+    background: linear-gradient(135deg, var(--accent), var(--warm));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pd-sub {
+    color: var(--muted);
+    font-size: 1.1rem;
+    max-width: 70ch;
+    margin: 0 auto;
+  }
+
+  .pd-meta {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+  }
+
+  .pd-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid rgba(18,255,122,0.18);
+    background: rgba(18,255,122,0.06);
+    color: var(--ink);
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  .pd-chip [data-lucide] {
+    width: 1.1em; height: 1.1em;
+  }
+
+  .pd-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .pd-card {
+    position: relative;
+    background: rgba(10,9,8,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(18,255,122,0.06) inset;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+
+  .pd-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(18,255,122,0.15) inset;
+    border-color: rgba(18,255,122,0.25);
+  }
+
+  .pd-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    color: var(--warm);
+  }
+
+  .pd-card-title [data-lucide] { width: 1.1em; height: 1.1em; }
+
+  .pd-card-desc { color: var(--muted); margin: 0 0 12px; }
+
+  .pd-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+
+  .pd-list li { color: var(--ink); }
+
+  .pd-foot { text-align: center; }
+
+  .pd-note {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--muted);
+    background: rgba(18,255,122,0.05);
+    border: 1px solid rgba(18,255,122,0.1);
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+
+  .pd-note [data-lucide] { width: 1em; height: 1em; color: var(--accent); }
+
+  @media (max-width: 1100px) {
+    .pd-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 680px) {
+    .program-details { padding: 70px 0; }
+    .pd-grid { grid-template-columns: 1fr; }
+    .pd-card { padding: 20px; }
+    .pd-meta { gap: 8px; }
+    .pd-chip { padding: 8px 10px; font-size: 0.9rem; }
   }
 </style>
